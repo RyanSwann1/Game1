@@ -1,6 +1,8 @@
 #include "TextureManager.h"
+#include "Game.h"
+#include <assert.h>
 
-TextureManager * TextureManager::m_pInstance = nullptr;
+//TextureManager * TextureManager::m_pInstance = nullptr;
 
 
 TextureManager::TextureManager()
@@ -11,14 +13,34 @@ TextureManager::TextureManager()
 TextureManager::~TextureManager()
 {
 }
+//
+//TextureManager * TextureManager::instance()
+//{
+//	if (m_pInstance == nullptr) {
+//		m_pInstance = new TextureManager();
+//	}
+//
+//	return m_pInstance;
+//}
 
-TextureManager * TextureManager::instance()
+void TextureManager::load(std::string ID, std::string path)
 {
-	if (m_pInstance == nullptr) {
-		m_pInstance = new TextureManager();
+	//Load surface
+	SDL_Surface* surface = SDL_LoadBMP(path.c_str());
+	assert(surface != nullptr);
+	//Optimize said surface
+	SDL_Surface* optimizedSurface = SDL_ConvertSurface(surface, Game::instance()->getWindowSurface()->format, 0);
+	assert(optimizedSurface != nullptr);
+	//Convert surface into texture
+	SDL_Texture* texture = SDL_CreateTextureFromSurface(Game::instance()->getRenderer(), optimizedSurface);
+	//Free the surface
+	SDL_FreeSurface(surface);
+
+	if (texture != nullptr) {
+		m_textures[ID] = texture;
+		return;
 	}
 
-	return m_pInstance;
 }
 
 void TextureManager::draw(int x, int y, int width, int height, SDL_Renderer * renderer)
@@ -32,5 +54,6 @@ void TextureManager::draw(int x, int y, int width, int height, SDL_Renderer * re
 	srcRect.h = destRect.h = height;
 	destRect.x = x;
 	destRect.y = y;
-	//SDL_RenderCopy(renderer, )
+	
+
 }
