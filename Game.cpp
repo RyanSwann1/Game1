@@ -37,7 +37,11 @@ bool Game::init(const char* title, int sizeWidth, int sizeHeight)
 	m_window = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, sizeWidth, sizeHeight, SDL_WINDOW_SHOWN);
 	assert(m_window != nullptr);
 
-	//Initialize SDL 
+	//Create window surface
+	m_windowSurface = SDL_GetWindowSurface(m_window);
+	assert(m_windowSurface != nullptr);
+
+	//Initialize Renderer 
 	m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_PRESENTVSYNC);
 	assert(m_renderer != nullptr);
 
@@ -49,8 +53,9 @@ bool Game::init(const char* title, int sizeWidth, int sizeHeight)
 	m_gameStateMachine->changeState(new MenuState());
 	std::cout << "After INIT State.\n";
 
-	//Initialize Texture Manager
-	
+	//Load all game textures
+	m_textureManager.load("Player", "Paddle.BMP");
+	m_textureManager.load("Ball", "Ball.BMP");
 
 	//Initiazzation has been successful
 	m_running = true;
